@@ -3,6 +3,13 @@ import pygame
 import random
 
 
+# -------------------------------------
+#
+# SCROLL DOWN FOR CHALLENGE 3 & 4 !!
+#           (line 232)
+# ------------------------------------
+
+
 class Breakout:
 
     def __init__(self):
@@ -42,14 +49,14 @@ class Breakout:
 
         self.should_move_left = False
         self.should_move_right = False
-   
+
     def main(self):
 
         running = True
         while running:
 
             # 60 frames per second
-            time_delta = self.clock.tick(60)/1000
+            time_delta = self.clock.tick(60) / 1000
 
             # process key presses
             for event in pygame.event.get():
@@ -79,27 +86,27 @@ class Breakout:
             for i in range(len(self.ball_rects)):
                 ball = self.ball_rects[i]
                 if self.bat.bat_rect.top <= ball.ball_rect.bottom <= self.bat.bat_rect.bottom and \
-                   ball.ball_rect.right >= self.bat.bat_rect.left and \
-                   ball.ball_rect.left <= self.bat.bat_rect.right:
+                        ball.ball_rect.right >= self.bat.bat_rect.left and \
+                        ball.ball_rect.left <= self.bat.bat_rect.right:
                     ball.y_speed = -ball.y_speed
                     offset = ball.ball_rect.center[0] - self.bat.bat_rect.center[0]
-                    # offset > 0 means ball has hit RHS of bat                   
-                    # vary angle of ball depending on where ball hits bat                      
+                    # offset > 0 means ball has hit RHS of bat
+                    # vary angle of ball depending on where ball hits bat
                     if offset > 0:
-                        if offset > 30:  
+                        if offset > 30:
                             ball.x_speed = 7
-                        elif offset > 23:                 
+                        elif offset > 23:
                             ball.x_speed = 6
                         elif offset > 17:
                             ball.x_speed = 5
-                    else:  
-                        if offset < -30:                             
+                    else:
+                        if offset < -30:
                             ball.x_speed = -7
                         elif offset < -23:
                             ball.x_speed = -6
                         elif offset < -17:
                             ball.x_speed = -5
-                          
+
                 # move bat/ball
                 ball.ball_rect = ball.ball_rect.move(ball.x_speed, ball.y_speed)
                 if ball.ball_rect.left < 0 or ball.ball_rect.right > self.width:
@@ -114,9 +121,9 @@ class Breakout:
                 # check if ball has hit wall
                 # if yes then delete brick and change ball direction
                 index = ball.ball_rect.collidelist(self.wall.brick_rect)
-                if index != -1: 
+                if index != -1:
                     if ball.ball_rect.center[0] > self.wall.brick_rect[index].right or \
-                       ball.ball_rect.center[0] < self.wall.brick_rect[index].left:
+                            ball.ball_rect.center[0] < self.wall.brick_rect[index].left:
                         ball.x_speed = -ball.x_speed
                     else:
                         ball.y_speed = -ball.y_speed
@@ -137,14 +144,14 @@ class Breakout:
                 # check if ball has gone past bat - lose a ball
                 if ball.ball_rect.top > self.height:
                     self.remove_ball_rect_list.append(i)
-                    
+
             for index in self.remove_ball_rect_list:
                 self.ball_rects[index:index + 1] = []
-                
+
             self.remove_ball_rect_list = []
-            
+
             if self.is_last_ball():
-                
+
                 self.lives -= 1
                 self.bat.set_short_bat()
                 # start a new ball
@@ -155,11 +162,11 @@ class Breakout:
                 self.start_ball.y_speed = self.y_speed_init
                 self.start_ball.ball_rect.center = self.width * random.random(), self.height / 3
                 self.ball_rects.append(self.start_ball)
-                
+
                 if self.lives == 0:
                     if self.score > self.high_score:
                         self.high_score = self.score
-                    
+
                     msg = pygame.font.Font(None, 70).render("Game Over", True, (0, 255, 255), self.bg_colour)
                     msg_rect = msg.get_rect()
                     msg_rect = msg_rect.move(self.width / 2 - (msg_rect.center[0]), self.height / 3)
@@ -176,8 +183,8 @@ class Breakout:
                             if event.type == pygame.KEYDOWN:
                                 if event.key == pygame.K_ESCAPE:
                                     running = False
-                                if not (event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT):                                    
-                                    restart = True      
+                                if not (event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT):
+                                    restart = True
                         if restart:
                             self.screen.fill(self.bg_colour)
                             self.wall.build_wall(self.width)
@@ -186,7 +193,7 @@ class Breakout:
                             break
 
             self.screen.fill(self.bg_colour)
-            
+
             string_lives = 'Lives: {:,}'.format(self.lives)
             lives_text = pygame.font.Font(None, 30).render(string_lives, True, (0, 255, 255), self.bg_colour)
             lives_text_rect = lives_text.get_rect()
@@ -196,15 +203,15 @@ class Breakout:
             string_high = 'High: {:,}'.format(self.high_score)
             high_text = pygame.font.Font(None, 30).render(string_high, True, (0, 255, 255), self.bg_colour)
             high_text_rect = high_text.get_rect()
-            high_text_rect = high_text_rect.move((self.width/2) - (high_text_rect.right/2), 0)
+            high_text_rect = high_text_rect.move((self.width / 2) - (high_text_rect.right / 2), 0)
             self.screen.blit(high_text, high_text_rect)
-            
+
             string_score = 'Score: {:,}'.format(self.score)
             score_text = pygame.font.Font(None, 30).render(string_score, True, (0, 255, 255), self.bg_colour)
             score_text_rect = score_text.get_rect()
             score_text_rect = score_text_rect.move(self.width - score_text_rect.right, 0)
             self.screen.blit(score_text, score_text_rect)
-      
+
             for i in range(0, len(self.wall.brick_rect)):
                 self.screen.blit(self.wall.brick_list[i].brick_image, self.wall.brick_rect[i])
 
@@ -223,12 +230,32 @@ class Breakout:
 
         pygame.quit()
 
+    # -----------------------------------------------------------------------------
+    # Challenge 3
+    # -------------
+    #
+    # Make some changes to the activate_power_up function below so that there is a
+    # 50% chance of activating each power up.
+    #
+    # The second power up is activated using the 'self.start_multi_ball()' function.
+    # I've left it commented out below.
+    #
+    # TIPS
+    # -----
+    #
+    # - random.uniform(1, 100) creates a random number between 1 and 100
+    #
+    # - the if statement below makes use of the 'less than' comparison operator '<'
+    #   this comparison condition will return True if the random number is less than 100
+    # ------------------------------------------
+    # Challenge 4 is further down on line 423
+    # ------------------------------------------------------------------------------
     def activate_power_up(self):
         random_number = random.uniform(1, 100)  # this function produces a random number between 1 & 100
-        if random_number < 50:
+        if random_number < 100:
             self.bat.set_large_bat()
-        else:
-            self.start_multi_ball()
+
+            # self.start_multi_ball()
 
     def start_multi_ball(self):
         if self.ball_rects:
@@ -242,7 +269,7 @@ class Breakout:
     def is_last_ball(self):
         if not self.ball_rects:
             return True
-        
+
 
 class Ball:
 
@@ -253,8 +280,8 @@ class Ball:
         self.ball_rect = self.ball_rect.move(screen_size[0] / 2, screen_size[1] / 2)
         self.x_speed = init_speed[0]
         self.y_speed = init_speed[1]
-        
-        
+
+
 class Bat:
 
     def __init__(self, screen_size):
@@ -318,26 +345,26 @@ class DoubleBrick(Brick):
 
     def __init__(self, brick_image, double_brick_image):
         Brick.__init__(self, brick_image)
-        self.brick_image = double_brick_image  
-        self.normal_brick_image = brick_image 
+        self.brick_image = double_brick_image
+        self.normal_brick_image = brick_image
         self.brick_rect = self.brick_image.get_rect()
         self.brick_length = self.brick_rect.right - self.brick_rect.left
         self.brick_height = self.brick_rect.bottom - self.brick_rect.top
-        self.has_hits = True
+        self.hits_left = True
 
     def is_power_up(self):
         return False
 
     def has_hits_left(self):
-        return self.has_hits
+        return self.hits_left
 
     def on_hit(self):
-        self.has_hits = False
+        self.hits_left = False
         self.brick_image = self.normal_brick_image
 
     def get_score(self):
         return 200
-        
+
 
 class PowerUpBrick(Brick):
 
@@ -359,7 +386,7 @@ class PowerUpBrick(Brick):
 
     def get_score(self):
         return 100
-        
+
 
 class Wall:
     def __init__(self):
@@ -374,8 +401,8 @@ class Wall:
 
         self.brick_rect = []
         self.brick_list = []
-           
-    def build_wall(self, width):        
+
+    def build_wall(self, width):
         x_pos = 0
         y_pos = 60
         adj = 0
@@ -394,13 +421,20 @@ class Wall:
                 power_up_brick = PowerUpBrick(self.power_up_brick_image)
                 self.brick_list.append(power_up_brick)
             else:
-                double_brick = DoubleBrick(self.normal_brick_image, self.double_brick_image)
-                self.brick_list.append(double_brick)
-                
+                # -----------------------------------------------------------------------------------
+                # Challenge 4
+                # -------------
+                #
+                # Replace all the normal bricks in the wall with DoubleBricks.
+                # You may need to inspect the __init__ function of the DoubleBrick class further up.
+                # ------------------------------------------------------------------------------------
+                normal_brick = Brick(self.normal_brick_image)
+                self.brick_list.append(normal_brick)
+
             self.brick_rect.append(self.brick_rectangle)
             self.brick_rect[i] = self.brick_rect[i].move(x_pos, y_pos)
             x_pos = x_pos + self.brick_length
-    
+
 
 if __name__ == '__main__':
     br = Breakout()
