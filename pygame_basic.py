@@ -11,33 +11,21 @@ def main():
     sprite_y_pos = 400.0
     sprite_y_vel = 0.0
 
-    # ------------------------------------------------------------
-    # CHALLENGE 1
-    # ------------------------------------------------------------
-    #
-    # a) Change the game window size to 800, 600
-    # b) Change the window caption title to 'Amazing Sonic Pygame!'
-    # c) Change the loaded sprite from mario to sonic
-    #
-    # -------------------
-    # Find challenge 2 on line 76 !
-    # ------------------------------------------------------------
-
     pygame.init()
     os.environ['SDL_VIDEO_CENTERED'] = '1'  # center the window in the middle of the screen
-    screen_size = (640, 480)  # the size of the window for our game in pixels, also known as the 'resolution'
-    pygame.display.set_caption('Basic Mario Pygame')
+    screen_size = (800, 600)  # the size of the window for our game in pixels, also known as the 'resolution'
+    pygame.display.set_caption('Amazing Mario Pygame!')
     screen = pygame.display.set_mode(screen_size)
 
     background = pygame.Surface(screen.get_size())
     background = background.convert(screen)
     background.fill((200, 200, 255))
-    
-    mario_image = pygame.image.load('mario.png')  # load an image to use for our player sprite
+
+    original_mario_image = pygame.image.load('data/mario.png')  # load an image to use for our player sprite
 
     mario_sprite = pygame.sprite.Sprite()       # pygame Sprite lets us move and animate images
-    mario_sprite.image = mario_image            # set our sprite to use the loaded image
-    mario_sprite.rect = mario_image.get_rect()  # set our sprite to use the image dimensions as it's position rectangle
+    mario_sprite.image = original_mario_image.copy()   # set our sprite to use the loaded image
+    mario_sprite.rect = mario_sprite.image.get_rect()  # set our sprite to use the image rect as it's position rectangle
     # set the starting position of our sprite - in this case the middle of the screen
     mario_sprite.rect.bottomleft = (int(sprite_x_pos), int(sprite_y_pos))
 
@@ -50,7 +38,7 @@ def main():
     # add some blocks for mario to walk on
     block_floor_height = 400.0
     block_num = 0
-    block_image = pygame.image.load('block.png').convert()  # load an image
+    block_image = pygame.image.load('data/block.png').convert()  # load an image
     while block_num < 20:
         block_sprite = pygame.sprite.Sprite()       
         block_sprite.image = block_image            
@@ -71,38 +59,17 @@ def main():
         # and get the 'time delta' which we can use to make movements
         # smooth even if the frame rate changes
         time_delta = clock.tick(60)/1000
-        
-        # ------------------------------------------------------------------------
-        # CHALLENGE 2
-        # ------------------------------------------------------------------------
-        #
-        # a)  Add a keyboard input test that sets the 'is_right_key_down' variable
-        #     to True when the right arrow key (K_RIGHT) is pressed down.
-        # b)  Set the same variable to False when the right arrow key is released.
-        #
-        # TIPS
-        # --------
-        #  - K_RIGHT is the defined name of the right arrow key in pygame,
-        #    all the keys on the keyboard have a different name like K_SPACE
-        #    for the space bar
-        #
-        #  - 'elif' is a short way of saying 'else if' it can follow after
-        #     an 'if' statement block and will only run if the first if block
-        #     does not run (that's the else part) and if the test condition is
-        #     true (that's the if part)
-        #
-        #  - Have a careful look at the if statement block for the K_LEFT key.
-        #
-        # ----------------------------------------------------------------------
-        # Look in the breakout.py file to find more challenges!
-        # ----------------------------------------------------------------------
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 running = False
             elif event.type == KEYDOWN:  # this tests if *any* key has been pressed down this loop round of the game
                 if event.key == K_LEFT:  # this tests if the key pressed down is the left arrow
                     is_left_key_down = True
-                # Add your first test here
+                    mario_sprite.image = pygame.transform.flip(original_mario_image, True, False)
+                if event.key == K_RIGHT:
+                    is_right_key_down = True
+                    mario_sprite.image = original_mario_image
 
                 if event.key == K_SPACE:
                     if sprite_y_pos == block_floor_height:
@@ -112,7 +79,8 @@ def main():
             elif event.type == KEYUP:  # this tests if *any* key on the keyboard has been released this loop
                 if event.key == K_LEFT:  # this tests if the released key is the left arrow
                     is_left_key_down = False
-                # Add your second test here
+                if event.key == K_RIGHT:
+                    is_right_key_down = False
 
         # Do the actual sprite movement
         # left and right

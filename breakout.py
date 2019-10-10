@@ -2,12 +2,6 @@ import os
 import pygame
 import random
 
-# -------------------------------------
-#
-# SCROLL DOWN FOR CHALLENGE 3 & 4 !!
-#           (line 232)
-# ------------------------------------
-
 
 class Breakout:
 
@@ -229,32 +223,12 @@ class Breakout:
 
         pygame.quit()
 
-# -----------------------------------------------------------------------------
-# Challenge 3
-# -------------
-#
-# Make some changes to the activate_power_up function below so that there is a
-# 50% chance of activating each power up.
-#
-# The second power up is activated using the 'self.start_multi_ball()' function.
-# I've left it commented out below.
-#
-# TIPS
-# -----
-#
-# - random.uniform(1, 100) creates a random number between 1 and 100
-#
-# - the if statement below makes use of the 'less than' comparison operator '<'
-#   this comparison condition will return True if the random number is less than 100
-# ------------------------------------------
-# Challenge 4 is further down on line 423
-# ------------------------------------------------------------------------------
     def activate_power_up(self):
         random_number = random.uniform(1, 100)  # this function produces a random number between 1 & 100
-        if random_number < 100:
+        if random_number < 50:
             self.bat.set_large_bat()
-
-            # self.start_multi_ball()
+        else:
+            self.start_multi_ball()
 
     def start_multi_ball(self):
         if self.ball_rects:
@@ -349,16 +323,16 @@ class DoubleBrick(Brick):
         self.brick_rect = self.brick_image.get_rect()
         self.brick_length = self.brick_rect.right - self.brick_rect.left
         self.brick_height = self.brick_rect.bottom - self.brick_rect.top
-        self.has_hits_left = True
+        self.has_hits = True
 
     def is_power_up(self):
         return False
 
     def has_hits_left(self):
-        return self.has_hits_left
+        return self.has_hits
 
     def on_hit(self):
-        self.has_hits_left = False
+        self.has_hits = False
         self.brick_image = self.normal_brick_image
 
     def get_score(self):
@@ -420,15 +394,8 @@ class Wall:
                 power_up_brick = PowerUpBrick(self.power_up_brick_image)
                 self.brick_list.append(power_up_brick)
             else:
-                # -----------------------------------------------------------------------------------
-                # Challenge 4
-                # -------------
-                #
-                # Replace all the normal bricks in the wall with DoubleBricks.
-                # You may need to inspect the __init__ function of the DoubleBrick class further up.
-                # ------------------------------------------------------------------------------------
-                normal_brick = Brick(self.normal_brick_image)
-                self.brick_list.append(normal_brick)
+                double_brick = DoubleBrick(self.normal_brick_image, self.double_brick_image)
+                self.brick_list.append(double_brick)
                 
             self.brick_rect.append(self.brick_rectangle)
             self.brick_rect[i] = self.brick_rect[i].move(x_pos, y_pos)
